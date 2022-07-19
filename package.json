@@ -1,12 +1,24 @@
 {
   "name": "src",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmdwnsyang/poppers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tmdwnsyang/poppers/issues"
+  },
+  "homepage": "https://github.com/tmdwnsyang/poppers#readme",
+  "description": "",
+  "dependencies": {
+    "firebase-admin": "^11.0.0"
+  }
 }

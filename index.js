@@ -1,5 +1,25 @@
 import game from "./game.js";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js';
+import { getDatabase, ref, set, push} from 'https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js';
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDL5zVdi28woZKwXaqQGn488oaV4pfi5Fk",
+  authDomain: "poppers-774a0.firebaseapp.com",
+  projectId: "poppers-774a0",
+  storageBucket: "poppers-774a0.appspot.com",
+  messagingSenderId: "262767763780",
+  appId: "1:262767763780:web:c2276624df9b1cd6dd7711",
+  measurementId: "G-SCTSNJJ1F3",
+  databaseURL: "https://poppers-774a0-default-rtdb.firebaseio.com/",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
 
 // var leaderBoardsRaw = fs.readFile('score.json');
 // var leaderBoards = JSON.parse(leaderBoardsRaw);
@@ -13,14 +33,10 @@ fetch('https://tmdwnsyang.github.io/poppers/score.json')
   }}).then( data => {
     leaderBoards = data;
     
-    console.log(leaderBoards);
+    // console.log(leaderBoards);
   } ).catch( error => {
     console.error(`could not get scores json: ${error}`);
   })
-
-//  var leaderBoards = JSON.parse(leaderBoardsRaw);  
-// var fs = require('fs'); 
-console.log(leaderBoards);
 
 
 //! linebreaks and other formatting stuff
@@ -176,36 +192,24 @@ function gameOverPopup (scoreboardPopup){
   submitButton.addEventListener('click',()=> {
     gameObj.setPlayerProperties(playerName.value, gameObj.getBoardScore() );
     closePopup();
-    saveData(); 
+    
+    writeUserData(gameObj.getPlayerName(), gameObj.getPlayerScoreCount(), 
+                  gameObj.getDifficulty(), 0);  
   });
   
 }
 
-// Saves all data generated. Called by gameover popup windows 
-function saveData(){
-  let newPlayerInfo = [{ 
-  "playerName" : gameObj.getPlayerName(), 
-  "score" : gameObj.getPlayerScoreCount(), 
-  "difficulty" : gameObj.getDifficulty()
-  }];
-  console.log(newPlayerInfo);
-  leaderBoards.push(newPlayerInfo);
-
-  // // reverting to JSON file
-  // let dataStr = JSON.stringify(leaderBoards);
-  // fs.writeFile('score.json', dataStr, () => { });
-
-
-    // let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-
-    // let exportFileDefaultName = 'data.json';
-
-    // let linkElement = document.createElement('a');
-    // linkElement.setAttribute('href', dataUri);
-    // linkElement.setAttribute('download', exportFileDefaultName);
-    // linkElement.click();
-
-  // localStorage.setItem('leaderBoards',JSON.stringify(leaderBoards));
+//# FIREBASE DATABASE HELPER FUNCTIONS!
+function writeUserData( playerName, score, difficulty, time = 0)
+{
+  const database = getDatabase(app);
+  const postListRef = ref(database, difficulty);
+  const newPostRef = push(postListRef);
+  set(newPostRef, {
+    difficulty: difficulty,
+    playerName : playerName,
+    score : score
+  })
 }
 
 //============================================================
@@ -234,3 +238,4 @@ function appendNewLineChild(parent)
 {
   appendItemChild(parent, '', 'br');
 }
+
