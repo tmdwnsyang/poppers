@@ -193,12 +193,12 @@ function saveData(){
   "score" : gameObj.getPlayerScoreCount(), 
   "difficulty" : gameObj.getDifficulty()
   }];
-  console.log(newPlayerInfo);
-  leaderBoards.push(newPlayerInfo);
+  // console.log(newPlayerInfo);
+  // leaderBoards.push(newPlayerInfo);
 
-  // reverting to JSON file
-  let dataStr = JSON.stringify(leaderBoards);
-  fs.writeFile('score.json', dataStr, () => { });
+  // // reverting to JSON file
+  // let dataStr = JSON.stringify(leaderBoards);
+  // fs.writeFile('score.json', dataStr, () => { });
 
 
     // let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
