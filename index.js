@@ -1,9 +1,9 @@
 import game from "./game.js";
-require('./score.json');
-var fs = require('fs'); 
-var leaderBoardsRaw = fs.readFile('score.json');
-var leaderBoards = JSON.parse(leaderBoardsRaw);
-console.log(leaderBoards);
+// require('./score.json');
+// var fs = require('fs'); 
+// var leaderBoardsRaw = fs.readFile('score.json');
+// var leaderBoards = JSON.parse(leaderBoardsRaw);
+// console.log(leaderBoards);
 
 // // Import the functions you need from the SDKs you need
 // // Import the functions you need from the SDKs you need
@@ -201,14 +201,14 @@ function saveData(){
   fs.writeFile('score.json', dataStr, () => { });
 
 
-    let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    // let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
-    let exportFileDefaultName = 'data.json';
+    // let exportFileDefaultName = 'data.json';
 
-    let linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+    // let linkElement = document.createElement('a');
+    // linkElement.setAttribute('href', dataUri);
+    // linkElement.setAttribute('download', exportFileDefaultName);
+    // linkElement.click();
 
   // localStorage.setItem('leaderBoards',JSON.stringify(leaderBoards));
 }
