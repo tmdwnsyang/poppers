@@ -1,9 +1,9 @@
 import game from "./game.js";
-// require('./score.json');
-// var fs = require('fs'); 
-// var leaderBoardsRaw = fs.readFile('score.json');
-// var leaderBoards = JSON.parse(leaderBoardsRaw);
-// console.log(leaderBoards);
+require('./score.json');
+var fs = require('fs'); 
+var leaderBoardsRaw = fs.readFile('score.json');
+var leaderBoards = JSON.parse(leaderBoardsRaw);
+console.log(leaderBoards);
 
 // // Import the functions you need from the SDKs you need
 // // Import the functions you need from the SDKs you need
