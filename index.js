@@ -193,7 +193,7 @@ function saveData(){
   "score" : gameObj.getPlayerScoreCount(), 
   "difficulty" : gameObj.getDifficulty()
   }];
-
+  console.log(newPlayerInfo);
   leaderBoards.push(newPlayerInfo);
 
   // reverting to JSON file
@@ -210,7 +210,7 @@ function saveData(){
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
 
-  localStorage.setItem('leaderBoards',JSON.stringify(leaderBoards));
+  // localStorage.setItem('leaderBoards',JSON.stringify(leaderBoards));
 }
 
 //============================================================
