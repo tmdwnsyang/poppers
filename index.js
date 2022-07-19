@@ -1,32 +1,27 @@
 import game from "./game.js";
-// require('./score.json');
-// var fs = require('fs'); 
+
+
 // var leaderBoardsRaw = fs.readFile('score.json');
 // var leaderBoards = JSON.parse(leaderBoardsRaw);
-// console.log(leaderBoards);
+var leaderBoards= [];
+fetch('https://tmdwnsyang.github.io/poppers/score.json')
+.then(response => {
+  if (!response.ok) 
+    throw new Error(`HTTP error: ${response.status}`);
+  else{
+    return response.json();
+  }}).then( data => {
+    leaderBoards = data;
+    
+    console.log(leaderBoards);
+  } ).catch( error => {
+    console.error(`could not get scores json: ${error}`);
+  })
 
-// // Import the functions you need from the SDKs you need
-// // Import the functions you need from the SDKs you need
-// import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-// // TODO: Add SDKs for Firebase products that you want to use
-// // https://firebase.google.com/docs/web/setup#available-libraries
+//  var leaderBoards = JSON.parse(leaderBoardsRaw);  
+// var fs = require('fs'); 
+console.log(leaderBoards);
 
-// // Your web app's Firebase configuration
-// // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDL5zVdi28woZKwXaqQGn488oaV4pfi5Fk",
-//   authDomain: "poppers-774a0.firebaseapp.com",
-//   projectId: "poppers-774a0",
-//   storageBucket: "poppers-774a0.appspot.com",
-//   messagingSenderId: "262767763780",
-//   appId: "1:262767763780:web:c2276624df9b1cd6dd7711",
-//   measurementId: "G-SCTSNJJ1F3"
-// };
-
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
 
 //! linebreaks and other formatting stuff
 let lineBreak = document.createElement('br');
@@ -193,8 +188,8 @@ function saveData(){
   "score" : gameObj.getPlayerScoreCount(), 
   "difficulty" : gameObj.getDifficulty()
   }];
-  // console.log(newPlayerInfo);
-  // leaderBoards.push(newPlayerInfo);
+  console.log(newPlayerInfo);
+  leaderBoards.push(newPlayerInfo);
 
   // // reverting to JSON file
   // let dataStr = JSON.stringify(leaderBoards);
