@@ -1,9 +1,9 @@
 import game from "./game.js";
 
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js';
-import { getDatabase, ref, set, push} from 'https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js';
-
+import { getDatabase, ref, set, push, onValue, query, orderByChild} from 'https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDL5zVdi28woZKwXaqQGn488oaV4pfi5Fk",
@@ -18,29 +18,27 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
+const db = getDatabase(app);
 
 
 // var leaderBoardsRaw = fs.readFile('score.json');
 // var leaderBoards = JSON.parse(leaderBoardsRaw);
-var leaderBoards= [];
-fetch('https://tmdwnsyang.github.io/poppers/score.json')
-.then(response => {
-  if (!response.ok) 
-    throw new Error(`HTTP error: ${response.status}`);
-  else{
-    return response.json();
-  }}).then( data => {
-    leaderBoards = data;
+// fetch('https://tmdwnsyang.github.io/poppers/score.json')
+// .then(response => {
+//   if (!response.ok) 
+//     throw new Error(`HTTP error: ${response.status}`);
+//   else{
+//     return response.json();
+//   }}).then( data => {
+//     leaderBoards = data;
     
-    // console.log(leaderBoards);
-  } ).catch( error => {
-    console.error(`could not get scores json: ${error}`);
-  })
+//     // console.log(leaderBoards);
+//   } ).catch( error => {
+//     console.error(`could not get scores json: ${error}`);
+//   })
 
 
 //! linebreaks and other formatting stuff
-let lineBreak = document.createElement('br');
 var scoreCounter = document.querySelector("#subT");
 const idLevels = document.querySelector("#levels");
 const levels = document.getElementsByClassName("levelTile");
@@ -48,6 +46,7 @@ const container = document.querySelector("#container");
 var tiles = document.getElementsByClassName("tile");
 let debug = true;
 let gameObj = new game(easy, debug);
+let leaderBoard
 
 // MENU Options!! 0~6 
 levels[0].addEventListener("click",  difficultySelection);
@@ -80,37 +79,6 @@ function difficultySelection(event) {
   }
   scoreCounter.textContent = "Click anywhere below to begin!";
 }
-
-
-// ========== POPUP MENUS
-function openPopup(option = 'ERROR'){
-  let textHeading = document.createElement("h2");
-  let scoreboardPopup = document.getElementById("popup");
-  scoreboardPopup.classList.add("open-popup");
-
-  clearChild(scoreboardPopup);
-  if (option ==='scoreBoard')
-    appendItemChild(scoreboardPopup, "Scoreboard", "h2");
-  else if (option === 'gameOver')
-    gameOverPopup(scoreboardPopup);
-  else if (option === 'share')
-    appendItemChild(scoreboardPopup, 'Share, to whom?','h2');
-  else{
-    textHeading.textContent = "Credits, credits, CREDITS!";
-    scoreboardPopup.appendChild(textHeading);
-  }
-  if (option != 'gameOver'){
-    let dismissButton = appendItemChild(scoreboardPopup, 'dismiss','button');
-    dismissButton.addEventListener("click", closePopup);
-  }
-  
-}
-
-function closePopup(){
-  let scoreboardPopup = document.getElementById('popup');
-   scoreboardPopup.classList.remove('open-popup');
-}
-
 
 // theDiv represent the tiles that are being clicked. Upon clicks, the
 // texts will be updated. Also keeps score of the game.
@@ -170,24 +138,56 @@ function resultsPage() {
   hiddenTile.children[2].addEventListener("click", () => openPopup('share'));
   
   openPopup('gameOver');
-     
-
 }
+
+//# ========== POPUP MENUS
+function openPopup(option = 'ERROR'){
+  let textHeading = document.createElement("h2");
+  let windowPopup = document.getElementById("popup");
+  windowPopup.classList.add("open-popup");
+
+  clearChild(windowPopup);
+  if (option ==='scoreBoard')
+  {
+    scoreboardPopup(windowPopup);
+  }
+  else if (option === 'gameOver')
+    gameOverPopup(windowPopup);
+  else if (option === 'share')
+    appendItemChild(windowPopup, 'Share, to whom?','h2');
+  else{
+    textHeading.textContent = "Credits, credits, CREDITS!";
+    windowPopup.appendChild(textHeading);
+  }
+  if (option != 'gameOver'){
+    let dismissButton = appendItemChild(windowPopup, 'dismiss','button');
+    dismissButton.addEventListener("click", closePopup);
+  }
+  
+}
+
+function closePopup(){
+  let windowPopup = document.getElementById('popup');
+   windowPopup.classList.remove('open-popup');
+}
+
+
+
 
 //# === POPUP: NAME INPUT DIALOGUE
 // Called by results() page. Responsible for saving the user game information 
 // and saving to the cloud.
-function gameOverPopup (scoreboardPopup){
-  appendItemChild(scoreboardPopup, "Let's make you famous!", "h2");
-  appendItemChild(scoreboardPopup, "Enter your name below.", "subText");
+function gameOverPopup (windowPopup){
+  appendItemChild(windowPopup, "Let's make you famous!", "h2");
+  appendItemChild(windowPopup, "Enter your name below.", "subText");
 
   
-  appendNewLineChild(scoreboardPopup);
-  var playerName = appendItemChild(scoreboardPopup, null, "input");
-  appendNewLineChild(scoreboardPopup);
+  appendNewLineChild(windowPopup);
+  var playerName = appendItemChild(windowPopup, null, "input");
+  appendNewLineChild(windowPopup);
   
 
-  var submitButton = appendItemChild(scoreboardPopup, "Submit!", "button");
+  var submitButton = appendItemChild(windowPopup, "Submit!", "button");
 
   submitButton.addEventListener('click',()=> {
     gameObj.setPlayerProperties(playerName.value, gameObj.getBoardScore() );
@@ -199,17 +199,35 @@ function gameOverPopup (scoreboardPopup){
   
 }
 
+function scoreboardPopup(windowPopup){
+  appendItemChild(windowPopup, "Scoreboard", "h2");
+  var topThree = [ [], [], []];
+  const easyRef = query(ref(db, 'easy'), orderByChild('score'));
+  onValue(easyRef, (snapshot) => {
+    snapshot.forEach((childSnapshot) =>{
+      const childKey = childSnapshot.key;
+      const childData = childSnapshot.val();
+      console.log(`${childData.playerName} | ${childData.score}`);
+      // console.log(childKey);
+    });
+}, { onlyOnce: true});
+  
+
+}
+
+
 //# FIREBASE DATABASE HELPER FUNCTIONS!
 function writeUserData( playerName, score, difficulty, time = 0)
 {
-  const database = getDatabase(app);
-  const postListRef = ref(database, difficulty);
+  // const database = getDatabase(app);
+  const postListRef = ref(db, difficulty);
   const newPostRef = push(postListRef);
   set(newPostRef, {
     difficulty: difficulty,
     playerName : playerName,
     score : score
   })
+  console.log(newPostRef);
 }
 
 //============================================================
@@ -238,4 +256,3 @@ function appendNewLineChild(parent)
 {
   appendItemChild(parent, '', 'br');
 }
-
