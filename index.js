@@ -38,12 +38,13 @@ const db = getDatabase(app);
 //   })
 
 
-initializeGame();
+window.onload = initializeGame();
 
 
 function initializeGame() {
   const levels = document.getElementsByClassName("levelTile");
   const container = document.querySelector("#container");
+  
   let leaderBoard = getUserObjectInArray();  // records
   let debug = false;
   let gameObj = new game(easy, debug, leaderBoard);
@@ -70,7 +71,7 @@ function menuSelectClickHandler(elem, gameObj)
    {
     var tiles = document.getElementsByClassName("tile");
     const idLevels = document.querySelector("#levels");
-    var scoreCounter = document.querySelector("#subT");
+    var score = document.querySelector("#subT");
 
     var difficulty = event.currentTarget.id;
     closePopup();
@@ -85,34 +86,75 @@ function menuSelectClickHandler(elem, gameObj)
     for (let item of tiles) {
       item.style.visibility = "visible";
     }
-    scoreCounter.textContent = "Click anywhere below to begin!";
+    score.textContent = "Click anywhere below to begin!";
   });
 }
 
 // theDiv represent the tiles that are being clicked. Upon clicks, the
-// texts will be updated. Also keeps score of the game.
-
+// texts will be updated. Also keeps the SCORE and TIME of the PLAYER.
+// The game progresses with a clickEvent handler
 function gameInProgressHandler(elem, gameObj) {
+  
+  var startTime, myInterval, elapsedTime;
+  var score = document.querySelector("#subT");
+  var tiles = document.getElementsByClassName("tile");
+  var subtextTime ;
+  var win = false;
+
+  startTime ;
+  
+  // Starts the timer for the first run
+  var timer = ( function() {
+    var executed = false;
+    return function() { 
+      if (!executed) {
+        executed = true;
+        elapsedTime = 0;
+        startTime = Date.now();
+        console.log('elapsedTime');
+        
+        myInterval = setInterval(function(){
+          elapsedTime = Date.now() - startTime;
+        },100);
+        subtextTime = document.createElement('div');
+        // subtextTime.className = 'subtextSmall';
+      }
+    }
+  })();
+  
+  
   elem.addEventListener(
     "click",
     function handler(event) {
+      // randomize background for every click
       backgroundChange(event, gameObj);
+      
+      // Starts the timer for the first run
+      timer(); 
 
-      var tiles = document.getElementsByClassName("tile");
-      var scoreCounter = document.querySelector("#subT");
+      // Increments the board score status
       const theDiv = event.target;
-      var win = true;
-      scoreCounter.appendChild(
-        document.createTextNode(`score: ${gameObj.getBoardScore()}`)
-      );
       gameObj.incrementBoardScore();
       theDiv.textContent = "Pop!";
-      scoreCounter.textContent = `score: ${gameObj.getBoardScore()}`;
-      for (
-        let i = 0;
+
+      // Displays the player score and the timer while the game is running
+      // Also STOPS the timer when the player wins
+      var myInterval = setInterval(function() {
+        if (!win){
+          score.innerHTML = `score: ${gameObj.getBoardScore()}`;
+          subtextTime.textContent = `time: ${(elapsedTime / 1000).toFixed(3)} s`;
+          appendNewLineChild(score);
+          score.appendChild(subtextTime);
+        }
+        else{
+          clearInterval(myInterval);
+        }
+      }, 100);
+
+      // Determines wins or losses by checking if the color matches every round
+      for (let i = 0;
         i < gameObj.getBoardSize() - 1 && gameObj.getBoardScore() > 0;
-        i++
-      ) {
+        i++) {
         if (
           tiles[i].style.backgroundColor != tiles[i + 1].style.backgroundColor
         ) {
@@ -121,14 +163,17 @@ function gameInProgressHandler(elem, gameObj) {
           break;
         } else win = true;
       }
+
+      // Sets player time property once the player wins and sets time
       if (win) {
         for (let item of tiles) {
           item.textContent = "🥳";
         }
-        // document.body.style.background = 'black';
+        gameObj.setPlayerTime((elapsedTime / 1000).toFixed(3));
+
         this.removeEventListener("click", handler);
-        // this.removeEventListener("click", bgHandler);
         resultsPage(gameObj);
+        
       }
     },
     false
@@ -149,10 +194,12 @@ function resultsPage(gameObj) {
   // Save all scores into a item file here
   appendItemChild(
     tests[0],
-    `Your score is ${gameObj.getBoardScore()}. ${gameObj.getEncouragement()}`,
+    `Your score is ${gameObj.getBoardScore()} with time of
+    ${gameObj.getPlayerTime()}. ${gameObj.getEncouragement()}`,
     "div",
     "subtextSmall"
   );
+ 
 
   // probably not the most elegant way, but this adds 3 buttons in the result.
   var str1 = ["Return", "Share", "Try Again"];
@@ -220,8 +267,7 @@ function victoryPopup(windowPopup, gameObj) {
     gameObj.setPlayerProperties(playerName.value, gameObj.getBoardScore());
     closePopup();
 
-    writeUserData(gameObj.getPlayerName(), gameObj.getPlayerScoreCount(),
-      gameObj.getDifficulty(), 0);
+    writeUserData(gameObj);
   });
 }
 
@@ -230,18 +276,17 @@ function rankingPopup(windowPopup, gameObj) {
   
   var d = new Date();
   var n = d.toLocaleTimeString();
-  console.log(gameObj.getLeaderBoard());
   appendItemChild(windowPopup, "World Ranking 🌎", "h1");
   
   var i = 1;
-  for ( let level of gameObj.getLeaderBoard()) {
+  for ( let level of gameObj.getLeaderBoard() ) {
     {
       for (let ob of level)
       {
-        appendItemChild(windowPopup, `${i}. ${ob.playerName.padEnd(20,'.').substr(0,20)} score: ${ob.score} mode: ${ob.difficulty}`,'div' ,'font-size: 2.0em');
+        appendItemChild(windowPopup, `${i}. ${ob.playerName.padEnd(20,'.').substr(0,16)} score: ${ob.score} | ${ob.difficulty} | ${ob.time}s`,'div' ,'font-size: 2.0em');
         i++;
         // appendNewLineChild(windowPopup);
-        if (i > 20) break;
+        if (i > 15) break;
       }
     }
   }
@@ -264,14 +309,15 @@ function rankingPopup(windowPopup, gameObj) {
 
 //#======== FIREBASE DATABASE HELPER FUNCTIONS!========================
 // Takes player info and saves data to the cloud
-function writeUserData(playerName, score, difficulty, time = 0) {
+function writeUserData(playerObj) {
   // const database = getDatabase(app);
-  const postListRef = ref(db, difficulty);
+  const postListRef = ref(db, playerObj.getDifficulty());
   const newPostRef = push(postListRef);
   set(newPostRef, {
-    difficulty: difficulty,
-    playerName: playerName,
-    score: score,
+    difficulty: playerObj.getDifficulty(),
+    playerName: playerObj.getPlayerName(),
+    score: playerObj.getPlayerScoreCount(),
+    time: playerObj.getPlayerTime() 
   });
   // console.log(newPostRef);
 }
@@ -282,7 +328,7 @@ function getUserObjectInArray(){
   let leaderBoard = [[],[],[]];
   var levelKeys = ['easy', 'hard', 'extreme'];
   for (let i = 0; i < levelKeys.length; i++) {
-    const easyRef = query(ref(db, levelKeys[i]), orderByChild("score"));
+    const easyRef = query(ref(db, levelKeys[i]), orderByChild("time"));
     onValue(easyRef,
       (snapshot) => {
         snapshot.forEach((childSnapshot) => {
@@ -291,7 +337,8 @@ function getUserObjectInArray(){
           leaderBoard[i].push({
             playerName: childData.playerName,
             score : childData.score,
-            difficulty: childData.difficulty
+            difficulty: childData.difficulty,
+            time: childData.time
           });
         });
       },
@@ -333,3 +380,5 @@ let item = document.createElement(elementType);
 function appendNewLineChild(parent) {
   appendItemChild(parent, "", "br");
 }
+
+

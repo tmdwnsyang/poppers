@@ -17,6 +17,7 @@ class game {
     this.#difficulty = difficulty;
     this.#calculateBoardProperties(difficulty);
   }
+  setPlayerTime(time) { this.#time = time; }
 
   // returns score count in integer > 0
   getPlayerScoreCount() {
@@ -45,14 +46,16 @@ class game {
     })`;
     return rndCol;
   }
+  getPlayerTime() { return this.#time;}
 
   getLeaderBoard(){ return this.#leaderBoard;}
   incrementBoardScore() { this.#boardScoreCount++};
   
   setPlayerProperties(name , currentScore = this.#boardScoreCount) { 
     // var whiteSpace = 15 - name.length();
-    this.#playerName = name;
-    console.log(`'${this.#playerName}'`);
+    if (name.length === 0) {}
+    else 
+      this.#playerName = name;
     this.#playerScoreCount = currentScore;
   
 }
@@ -89,6 +92,7 @@ class game {
   #rightBound;
   #boardScoreCount;
   #leaderBoard ;
+  #time;
   #encouragements = [
     [
       "That wasn't so bad, was it? Easy mode rules!",

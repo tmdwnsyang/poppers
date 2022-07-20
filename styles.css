@@ -4,6 +4,14 @@
     font-size: 1.2 em;
 }
 
+@font-face {
+  font-family: Impact;
+  src: local("Impact"),
+       local("HelveticaNeue-Bold"),
+       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true');
+  font-weight: bold;
+}
+
 .subIntro {
     margin: 0px;
     width: 100%;
@@ -20,6 +28,7 @@
   .subtextSmall{
     font-size: 0.3em;
   }
+
   
 
   .levelTile {
@@ -123,11 +132,6 @@
     visibility: visible;
     top: 30%;
     transform: translate(-50%, -50%) scale(1);
-  }
-  .close-popup{
-    transform: translate(-50%, -50%) scale(1);
-    transition: transform 0.2s, top 0.4s;
-
   }
   .mainImages{
     display: inline-block;
