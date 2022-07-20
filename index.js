@@ -278,6 +278,7 @@ function rankingPopup(windowPopup, gameObj) {
   var n = d.toLocaleTimeString();
   appendItemChild(windowPopup, "World Ranking 🌎", "h1");
   
+  
   var i = 1;
   for ( let level of gameObj.getLeaderBoard() ) {
     {
@@ -290,11 +291,14 @@ function rankingPopup(windowPopup, gameObj) {
       }
     }
   }
+
   appendNewLineChild(windowPopup);
 
   appendItemChild(windowPopup, `Latest data fetched at ${d}`, "subtextSmall",'subtext', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
-  
+  appendItemChild(windowPopup, `*Ordered by descending time. Lower the score, the better!`, "subtextSmall",'div', 'font-size: 0.6em');
+  appendNewLineChild(windowPopup);
+
   // for (let data of leaderBoard){
   //   console.log( `${data}`);
   // }
@@ -328,7 +332,7 @@ function getUserObjectInArray(){
   let leaderBoard = [[],[],[]];
   var levelKeys = ['easy', 'hard', 'extreme'];
   for (let i = 0; i < levelKeys.length; i++) {
-    const easyRef = query(ref(db, levelKeys[i]), orderByChild("time"));
+    const easyRef = query(ref(db, levelKeys[i]), orderByChild('time'));
     onValue(easyRef,
       (snapshot) => {
         snapshot.forEach((childSnapshot) => {

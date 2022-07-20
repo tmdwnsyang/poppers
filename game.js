@@ -17,7 +17,7 @@ class game {
     this.#difficulty = difficulty;
     this.#calculateBoardProperties(difficulty);
   }
-  setPlayerTime(time) { this.#time = time; }
+  setPlayerTime(time) { this.#time = Number(time); }
 
   // returns score count in integer > 0
   getPlayerScoreCount() {
