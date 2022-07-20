@@ -20,6 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+
 // var leaderBoardsRaw = fs.readFile('score.json');
 // var leaderBoards = JSON.parse(leaderBoardsRaw);
 // fetch('https://tmdwnsyang.github.io/poppers/score.json')
@@ -35,18 +36,22 @@ const db = getDatabase(app);
 //   } ).catch( error => {
 //     console.error(`could not get scores json: ${error}`);
 //   })
+
+
 initializeGame();
+
 
 function initializeGame() {
   const levels = document.getElementsByClassName("levelTile");
   const container = document.querySelector("#container");
+  let leaderBoard = getUserObjectInArray();  // records
   let debug = false;
-  let gameObj = new game(easy, debug);
+  let gameObj = new game(easy, debug, leaderBoard);
   // MENU Options!! 0~6
   menuSelectClickHandler(levels[0], gameObj);
   menuSelectClickHandler(levels[1], gameObj);
   menuSelectClickHandler(levels[2], gameObj);
-  openPopup(  'scoreBoard', gameObj, levels[3] );
+  openPopup(  'ranking', gameObj, levels[3] );
   openPopup(  'share', gameObj,levels[4]);
   openPopup( 'credits' , gameObj, levels[5]);
   // levels[5].addEventListener("click", openPopup);
@@ -159,10 +164,10 @@ function resultsPage(gameObj) {
   });
   hiddenTile.children[2].addEventListener("click", () => openPopup("share"));
 
-  openPopup("gameOver", gameObj);
+  openPopup("victory", gameObj);
 }
 
-//# ========== POPUP MENUS
+//# ========== POPUP HELPER FUNCTIONS =======================
 // optional param 'elem' must be passed in if you desire it to be include an
 // event handler, such as click
 function openPopup(option, gameObj, elem = null) { 
@@ -179,16 +184,16 @@ function popupClick(option, gameObj) {
   let windowPopup = document.getElementById("popup");
   windowPopup.classList.add("open-popup");
   clearChild(windowPopup);
-  if (option === "scoreBoard") {
-    scoreboardPopup(windowPopup);
-  } else if (option === "gameOver") gameOverPopup(windowPopup, gameObj);
+  if (option === "ranking") {
+    rankingPopup(windowPopup, gameObj);
+  } else if (option === "victory") victoryPopup(windowPopup, gameObj);
   else if (option === "share")
     appendItemChild(windowPopup, "Share, to whom?", "h2");
   else if (option === "credits") {
     textHeading.textContent = "Credits, credits, CREDITS!";
     windowPopup.appendChild(textHeading);
   }
-  if (option != "gameOver") {
+  if (option != "victory") {
     let dismissButton = appendItemChild(windowPopup, "dismiss", "button");
     dismissButton.addEventListener("click", closePopup);
   }
@@ -199,10 +204,9 @@ function closePopup() {
   windowPopup.classList.remove("open-popup");
 }
 
-//# === POPUP: NAME INPUT DIALOGUE
 // Called by results() page. Responsible for saving the user game information
 // and saving to the cloud.
-function gameOverPopup(windowPopup, gameObj) {
+function victoryPopup(windowPopup, gameObj) {
   appendItemChild(windowPopup, "Let's make you famous!", "h2");
   appendItemChild(windowPopup, "Enter your name below.", "subText");
 
@@ -221,25 +225,40 @@ function gameOverPopup(windowPopup, gameObj) {
   });
 }
 
-function scoreboardPopup(windowPopup) {
-  appendItemChild(windowPopup, "Scoreboard", "h2");
-  var topThree = [[], [], []];
-  const easyRef = query(ref(db, "easy"), orderByChild("score"));
-  onValue(
-    easyRef,
-    (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        const childKey = childSnapshot.key;
-        const childData = childSnapshot.val();
-        console.log(`${childData.playerName} | ${childData.score}`);
-        // console.log(childKey);
-      });
-    },
-    { onlyOnce: true }
-  );
-}
+// 0 easy 1 hard 2 extreme
+function rankingPopup(windowPopup, gameObj) {
+  appendItemChild(windowPopup, "Ranking", "h2");
+  
+    
+  console.log(gameObj.getLeaderBoard());
+  
+  var i = 1;
+  for ( let level of gameObj.getLeaderBoard()) {
+    {
+      for (let ob of level)
+      {
+        appendItemChild(windowPopup, `${i}. ${ob.playerName} score: ${ob.score} mode: ${ob.difficulty}`,'subtext');
+        i++;
+        appendNewLineChild(windowPopup);
+        if (i > 15) break;
+      }
+    }
+  }
+  appendNewLineChild(windowPopup);
+  
+  // for (let data of leaderBoard){
+  //   console.log( `${data}`);
+  // }
 
-//# FIREBASE DATABASE HELPER FUNCTIONS!
+
+
+  }
+
+
+
+
+
+//#======== FIREBASE DATABASE HELPER FUNCTIONS!========================
 // Takes player info and saves data to the cloud
 function writeUserData(playerName, score, difficulty, time = 0) {
   // const database = getDatabase(app);
@@ -253,8 +272,35 @@ function writeUserData(playerName, score, difficulty, time = 0) {
   console.log(newPostRef);
 }
 
-//============================================================
-// HELPER FUNCTIONS....
+// Returns a container with 3 different difficulty levels and all users
+// in a form of array, sorted.
+function getUserObjectInArray(){
+  let leaderBoard = [[],[],[]];
+  var levelKeys = ['easy', 'hard', 'extreme'];
+  for (let i = 0; i < levelKeys.length; i++) {
+    const easyRef = query(ref(db, levelKeys[i]), orderByChild("score"));
+    onValue(easyRef,
+      (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const childData = childSnapshot.val();
+
+          leaderBoard[i].push({
+            playerName: childData.playerName,
+            score : childData.score,
+            difficulty: childData.difficulty
+          });
+        });
+      },
+      { onlyOnce: true }
+    );
+  }
+
+  // console.log(leaderBoard.length);
+
+
+  return leaderBoard;
+}
+//# =============== document HELPER FUNCTIONS ===================
 // pre: takes in parent object with children
 // post: clears ALL children
 function clearChild(parent) {

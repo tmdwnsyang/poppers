@@ -1,13 +1,15 @@
+
 class game {
   // public by default
 
-  constructor(difficulty = 'easy', debug = true){
+  constructor(difficulty = 'easy', debug = true, leaderBoards = []){
  
     this.#debugState = debug;
     this.#boardScoreCount = new Number();
     this.#difficulty = difficulty;
     this.#calculateBoardProperties(difficulty);
     this.setPlayerProperties(null);
+    this.#leaderBoard = leaderBoards;
   }
   // Takes and sets difficulty level in string and calculates board properties 
   // accordingly
@@ -43,11 +45,14 @@ class game {
     })`;
     return rndCol;
   }
+
+  getLeaderBoard(){ return this.#leaderBoard;}
   incrementBoardScore() { this.#boardScoreCount++};
   
   setPlayerProperties(name , currentScore = this.#boardScoreCount) { 
     this.#playerName = name;
     this.#playerScoreCount = currentScore;
+  
 }
   
   // PRIVATE FIELDS
@@ -81,6 +86,7 @@ class game {
   #leftBound;
   #rightBound;
   #boardScoreCount;
+  #leaderBoard ;
   #encouragements = [
     [
       "That wasn't so bad, was it? Easy mode rules!",
