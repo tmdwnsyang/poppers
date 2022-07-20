@@ -239,6 +239,8 @@ function popupClick(option, gameObj) {
   else if (option === "credits") {
     textHeading.textContent = "Credits, credits, CREDITS!";
     windowPopup.appendChild(textHeading);
+    creditPopup(windowPopup);
+
   }
   if (option != "victory") {
     let dismissButton = appendItemChild(windowPopup, "dismiss", "button");
@@ -270,6 +272,23 @@ function victoryPopup(windowPopup, gameObj) {
     writeUserData(gameObj);
   });
 }
+
+// CREDIT POPUP
+function creditPopup(windowPopup)
+{
+  appendItemChild(windowPopup,`Poppers! Beta v. 0.6`, 'div');
+  appendItemChild(windowPopup,`Database powered by Firebase™ 🔥`);
+  appendItemChild(windowPopup,`github.com/tmdwnsyang/`);
+
+  appendNewLineChild(windowPopup);
+
+  appendItemChild(windowPopup,`Special thanks to Mozilla's MDN Web Docs for getting me started. Program by me. All rights reserved.`, 'div', 'subtextSmall');  
+  
+  
+  appendNewLineChild(windowPopup);
+  
+}
+
 
 // 0 easy 1 hard 2 extreme
 function rankingPopup(windowPopup, gameObj) {
