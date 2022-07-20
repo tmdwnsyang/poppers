@@ -20,6 +20,7 @@
   .subtextSmall{
     font-size: 0.3em;
   }
+  
 
   .levelTile {
     margin: 0px;
@@ -112,7 +113,7 @@
     width: 400px;
     background: #fff;
     position: absolute;
-    top: 0;
+    top: 10%;
     left:50%;
     transform: translate(-50%, -50%) scale(0.1);
     text-align: center;
@@ -127,4 +128,9 @@
     visibility: visible;
     top: 30%;
     transform: translate(-50%, -50%) scale(1);
+  }
+  .close-popup{
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.2s, top 0.4s;
+
   }

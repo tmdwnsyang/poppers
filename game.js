@@ -8,7 +8,7 @@ class game {
     this.#boardScoreCount = new Number();
     this.#difficulty = difficulty;
     this.#calculateBoardProperties(difficulty);
-    this.setPlayerProperties(null);
+    this.setPlayerProperties('ANONYMOUS PLAYER');
     this.#leaderBoard = leaderBoards;
   }
   // Takes and sets difficulty level in string and calculates board properties 
@@ -50,7 +50,9 @@ class game {
   incrementBoardScore() { this.#boardScoreCount++};
   
   setPlayerProperties(name , currentScore = this.#boardScoreCount) { 
+    // var whiteSpace = 15 - name.length();
     this.#playerName = name;
+    console.log(`'${this.#playerName}'`);
     this.#playerScoreCount = currentScore;
   
 }

@@ -180,7 +180,7 @@ function openPopup(option, gameObj, elem = null) {
 
 function popupClick(option, gameObj) {
   
-  let textHeading = document.createElement("h2");
+  let textHeading = document.createElement("h1");
   let windowPopup = document.getElementById("popup");
   windowPopup.classList.add("open-popup");
   clearChild(windowPopup);
@@ -188,7 +188,7 @@ function popupClick(option, gameObj) {
     rankingPopup(windowPopup, gameObj);
   } else if (option === "victory") victoryPopup(windowPopup, gameObj);
   else if (option === "share")
-    appendItemChild(windowPopup, "Share, to whom?", "h2");
+    appendItemChild(windowPopup, "Share, with whom?", "h1");
   else if (option === "credits") {
     textHeading.textContent = "Credits, credits, CREDITS!";
     windowPopup.appendChild(textHeading);
@@ -207,7 +207,7 @@ function closePopup() {
 // Called by results() page. Responsible for saving the user game information
 // and saving to the cloud.
 function victoryPopup(windowPopup, gameObj) {
-  appendItemChild(windowPopup, "Let's make you famous!", "h2");
+ appendItemChild(windowPopup, "Let's make you famous!", "h1");
   appendItemChild(windowPopup, "Enter your name below.", "subText");
 
   appendNewLineChild(windowPopup);
@@ -227,23 +227,27 @@ function victoryPopup(windowPopup, gameObj) {
 
 // 0 easy 1 hard 2 extreme
 function rankingPopup(windowPopup, gameObj) {
-  appendItemChild(windowPopup, "Ranking", "h2");
   
-    
+  var d = new Date();
+  var n = d.toLocaleTimeString();
   console.log(gameObj.getLeaderBoard());
+  appendItemChild(windowPopup, "World Ranking 🌎", "h1");
   
   var i = 1;
   for ( let level of gameObj.getLeaderBoard()) {
     {
       for (let ob of level)
       {
-        appendItemChild(windowPopup, `${i}. ${ob.playerName} score: ${ob.score} mode: ${ob.difficulty}`,'subtext');
+        appendItemChild(windowPopup, `${i}. ${ob.playerName.padEnd(20,'.').substr(0,20)} score: ${ob.score} mode: ${ob.difficulty}`,'div' ,'font-size: 2.0em');
         i++;
-        appendNewLineChild(windowPopup);
-        if (i > 15) break;
+        // appendNewLineChild(windowPopup);
+        if (i > 20) break;
       }
     }
   }
+  appendNewLineChild(windowPopup);
+
+  appendItemChild(windowPopup, `Latest data fetched at ${d}`, "subtextSmall",'subtext', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
   
   // for (let data of leaderBoard){
@@ -269,7 +273,7 @@ function writeUserData(playerName, score, difficulty, time = 0) {
     playerName: playerName,
     score: score,
   });
-  console.log(newPostRef);
+  // console.log(newPostRef);
 }
 
 // Returns a container with 3 different difficulty levels and all users
@@ -315,12 +319,14 @@ function appendItemChild(
   parent,
   textContent = "",
   elementType = "div",
-  className = ""
+  className = "",
+  style ="",
 ) {
-  let item = document.createElement(elementType);
+let item = document.createElement(elementType);
   item.textContent = textContent;
   parent.appendChild(item);
   if (className.length != 0) item.className = className;
+  if (style != "") item.style.cssText += style;
   return item;
 }
 
