@@ -65,16 +65,11 @@
     overflow: hidden;
     outline: none;
     padding: 0px;
-    /* font-family: Impact, Haettenschweiler, 'Arial Narrow Bold' */
   }
   button:hover {
   color: white;
   /* opacity: 0.6; */
 }
-
-  /* body {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  } */
 
   .box {
     font-size: 0.2em;
@@ -133,4 +128,9 @@
     transform: translate(-50%, -50%) scale(1);
     transition: transform 0.2s, top 0.4s;
 
+  }
+  .mainImages{
+    display: inline-block;
+    vertical-align: middle;
+    height: 50px;
   }
