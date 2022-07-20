@@ -40,16 +40,16 @@ initializeGame();
 function initializeGame() {
   const levels = document.getElementsByClassName("levelTile");
   const container = document.querySelector("#container");
-  let debug = true;
+  let debug = false;
   let gameObj = new game(easy, debug);
   // MENU Options!! 0~6
   menuSelectClickHandler(levels[0], gameObj);
   menuSelectClickHandler(levels[1], gameObj);
   menuSelectClickHandler(levels[2], gameObj);
-
-  levels[3].addEventListener("click", () => openPopup("scoreBoard"));
-  levels[4].addEventListener("click", () => openPopup("share"));
-  levels[5].addEventListener("click", openPopup);
+  openPopup(  'scoreBoard', gameObj, levels[3] );
+  openPopup(  'share', gameObj,levels[4]);
+  openPopup( 'credits' , gameObj, levels[5]);
+  // levels[5].addEventListener("click", openPopup);
   gameInProgressHandler(container, gameObj);
 }
 
@@ -159,22 +159,32 @@ function resultsPage(gameObj) {
   });
   hiddenTile.children[2].addEventListener("click", () => openPopup("share"));
 
-  openPopup("gameOver");
+  openPopup("gameOver", gameObj);
 }
 
 //# ========== POPUP MENUS
-function openPopup(option = "ERROR") {
+// optional param 'elem' must be passed in if you desire it to be include an
+// event handler, such as click
+function openPopup(option, gameObj, elem = null) { 
+    if (elem != null) {
+      elem.addEventListener("click", () => popupClick(option, gameObj));
+    }
+    // for popups without an event listener 'click'
+    else popupClick(option, gameObj);
+}
+
+function popupClick(option, gameObj) {
+  
   let textHeading = document.createElement("h2");
   let windowPopup = document.getElementById("popup");
   windowPopup.classList.add("open-popup");
-
   clearChild(windowPopup);
   if (option === "scoreBoard") {
     scoreboardPopup(windowPopup);
-  } else if (option === "gameOver") gameOverPopup(windowPopup);
+  } else if (option === "gameOver") gameOverPopup(windowPopup, gameObj);
   else if (option === "share")
     appendItemChild(windowPopup, "Share, to whom?", "h2");
-  else {
+  else if (option === "credits") {
     textHeading.textContent = "Credits, credits, CREDITS!";
     windowPopup.appendChild(textHeading);
   }
@@ -192,7 +202,7 @@ function closePopup() {
 //# === POPUP: NAME INPUT DIALOGUE
 // Called by results() page. Responsible for saving the user game information
 // and saving to the cloud.
-function gameOverPopup(windowPopup) {
+function gameOverPopup(windowPopup, gameObj) {
   appendItemChild(windowPopup, "Let's make you famous!", "h2");
   appendItemChild(windowPopup, "Enter your name below.", "subText");
 
