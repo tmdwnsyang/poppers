@@ -7,7 +7,6 @@
 @font-face {
   font-family: Impact;
   src: local("Impact"),
-       local("HelveticaNeue-Bold"),
        url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true');
   font-weight: bold;
 }
@@ -44,6 +43,11 @@
     color: black;
     background-color: orange;
   }
+  .levelTile:hover{
+    background-color: rgb(214, 141, 16);
+
+  }
+
 
   input{
     font-size: 150%;  
@@ -65,7 +69,7 @@
     color: white;
     visibility: hidden;
   }
-
+ 
   button {
     background-color: transparent;
     background-repeat: no-repeat;
@@ -76,7 +80,7 @@
     padding: 0px;
   }
   button:hover {
-  color: white;
+  color: rgb(230, 230, 230);
   /* opacity: 0.6; */
 }
 
