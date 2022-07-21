@@ -280,7 +280,7 @@ function victoryPopup(windowPopup, gameObj) {
 
 function sharePopup(windowPopup)
 {
-  appendItemChild(windowPopup, '', 'div','sharethis-inline-share-buttons' );
+  // appendItemChild(windowPopup, '', 'div','sharethis-inline-share-buttons' );
 }
 
 // CREDIT POPUP
