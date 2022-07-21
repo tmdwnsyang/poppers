@@ -195,9 +195,9 @@ function resultsPage(gameObj) {
   appendItemChild(
     tests[0],
     `Your score is ${gameObj.getBoardScore()} with time of
-    ${gameObj.getPlayerTime()}. ${gameObj.getEncouragement()}`,
+    ${gameObj.getPlayerTime()} seconds. ${gameObj.getEncouragement()}`,
     "div",
-    "subtextSmall"
+    '', 'font-size: 15px'
   );
  
 
@@ -225,6 +225,8 @@ function openPopup(option, gameObj, elem = null) {
     else popupClick(option, gameObj);
 }
 
+
+
 function popupClick(option, gameObj) {
   
   let textHeading = document.createElement("h1");
@@ -235,7 +237,10 @@ function popupClick(option, gameObj) {
     rankingPopup(windowPopup, gameObj);
   } else if (option === "victory") victoryPopup(windowPopup, gameObj);
   else if (option === "share")
+  {
     appendItemChild(windowPopup, "Share, with whom?", "h1");
+    sharePopup(windowPopup);
+  }
   else if (option === "credits") {
     textHeading.textContent = "Credits, credits, CREDITS!";
     windowPopup.appendChild(textHeading);
@@ -271,6 +276,11 @@ function victoryPopup(windowPopup, gameObj) {
 
     writeUserData(gameObj);
   });
+}
+
+function sharePopup(windowPopup)
+{
+  appendItemChild(windowPopup, '', 'div','sharethis-inline-share-buttons' );
 }
 
 // CREDIT POPUP
