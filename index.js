@@ -360,11 +360,11 @@ function creditPopup(windowPopup)
 {
   appendItemChild(windowPopup,`Poppers! Beta v. 0.6`, 'div');
   appendItemChild(windowPopup,`Database powered by Firebase™ 🔥`);
-  appendItemChild(windowPopup,`github.com/tmdwnsyang/`);
+  appendItemChild(windowPopup,`Emojis by Microsoft`);
 
   appendNewLineChild(windowPopup);
 
-  appendItemChild(windowPopup,`Special thanks to Mozilla's MDN Web Docs for getting me started. Program by me. All rights reserved.`, 'div', 'subtextSmall');  
+  appendItemChild(windowPopup,`Special thanks to Mozilla's MDN Web Docs for getting me started. Program by me. 2022 All rights reserved, blah blah.`, 'div', 'subtextSmall');  
   
   
   appendNewLineChild(windowPopup);
