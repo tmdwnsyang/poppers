@@ -7,7 +7,8 @@
 @font-face {
   font-family: Impact;
   src: local("Impact"),
-       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true');
+       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('woff2'),
+       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('woff');;
   font-weight: bold;
 }
 
