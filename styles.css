@@ -44,7 +44,7 @@
     background-color: orange;
   }
   .levelTile:hover{
-    background-color: rgb(214, 141, 16);
+    background-color: rgb(255, 133, 96);
 
   }
 
@@ -82,7 +82,15 @@
   button:hover {
   color: rgb(230, 230, 230);
   /* opacity: 0.6; */
+  
 }
+  button, button::before{
+  -webkit-transition: all .2s ease-in;
+  -moz-transition: all .2s ease-in;
+  -ms-transition: all .2s ease-in;
+  -o-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+  }
 
   .box {
     font-size: 0.2em;
@@ -145,4 +153,73 @@
   
   .sharethis-inline-share-buttons{
     padding-bottom: 15px;
+    /* visibility: hidden; */
   }
+
+  
+  .sharethis-inline-share-buttons-popup{
+    padding-bottom: 15px;
+    visibility: visible;
+  }
+
+
+  
+
+.social-container {
+	margin:0 auto;
+  /* padding: 40px 0; */
+	width:200px;
+  height:100%;
+}
+
+/* Add this ID to a section or something you want to change the background-color */
+#social-section {
+  padding:60px 0;
+  -webkit-transition: all .2s ease-out;
+-moz-transition: all .2s ease-out;
+-ms-transition: all .2s ease-out;
+-o-transition: all .2s ease-out;
+transition: all .2s ease-out;
+}
+
+/* Button Styles */
+.social-container a {
+display: block;
+width:200px;
+line-height: 40px;
+border: 1px solid rgba(0,0,0,.1);
+color: rgba(0,0,0,.6);
+margin:20px 0;
+text-decoration: none;
+text-align:center;
+}
+
+.social-container a::before {
+  background-color: transparent;
+  bottom: 0;
+  content: '';
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.social-container a i {
+margin-right: 15px;   
+}
+
+.social-container a:hover  {
+border: 1px solid rgba(255,255,255,.3);
+color: white;
+  background-color: orange;
+}
+
+.social-container a,
+.social-container a::before {
+-webkit-transition: all .2s ease-in;
+-moz-transition: all .2s ease-in;
+-ms-transition: all .2s ease-in;
+-o-transition: all .2s ease-in;
+transition: all .2s ease-in;
+}

@@ -10,6 +10,7 @@ class game {
     this.#calculateBoardProperties(difficulty);
     this.setPlayerProperties('ANONYMOUS PLAYER');
     this.#leaderBoard = leaderBoards;
+    this.#time = 0.0;
   }
   // Takes and sets difficulty level in string and calculates board properties 
   // accordingly

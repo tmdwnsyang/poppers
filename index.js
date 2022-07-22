@@ -16,6 +16,7 @@ const firebaseConfig = {
   databaseURL: "https://poppers-774a0-default-rtdb.firebaseio.com/",
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -37,6 +38,9 @@ const db = getDatabase(app);
 //     console.error(`could not get scores json: ${error}`);
 //   })
 
+// fuck it, idgaf if this is global.
+let gameObjGlobal = new game();
+
 
 window.onload = initializeGame();
 
@@ -53,7 +57,7 @@ function initializeGame() {
   menuSelectClickHandler(levels[1], gameObj);
   menuSelectClickHandler(levels[2], gameObj);
   openPopup(  'ranking', gameObj, levels[3] );
-  openPopup(  'share', gameObj,levels[4]);
+  openPopup(  'shoutout!', gameObj,levels[4]);
   openPopup( 'credits' , gameObj, levels[5]);
   // levels[5].addEventListener("click", openPopup);
   gameInProgressHandler(container, gameObj);
@@ -184,7 +188,6 @@ function gameInProgressHandler(elem, gameObj) {
 function resultsPage(gameObj) {
   //# ===== RESULT UI
   var tests = document.getElementsByClassName("hiddenTile");
-  var hiddenTile = document.querySelector("#tile2");
   tests[0].style.visibility = "visible";
   tests[0].style.display = "block";
   tests[0].textContent = "YOU WON!";
@@ -199,19 +202,10 @@ function resultsPage(gameObj) {
     "div",
     '', 'font-size: 15px'
   );
+   openPopup("victory", gameObj);
+
+
  
-
-  // probably not the most elegant way, but this adds 3 buttons in the result.
-  var str1 = ["Return", "Share", "Try Again"];
-  for (let i = 0; i < 3; i++)
-    appendItemChild(hiddenTile, str1[i], "button", "levelTile");
-
-  hiddenTile.children[1].addEventListener("click", () => {
-    window.location.reload();
-  });
-  hiddenTile.children[2].addEventListener("click", () => openPopup("share"));
-
-  openPopup("victory", gameObj);
 }
 
 //# ========== POPUP HELPER FUNCTIONS =======================
@@ -229,23 +223,41 @@ function openPopup(option, gameObj, elem = null) {
 
 function popupClick(option, gameObj) {
   
+  
   let textHeading = document.createElement("h1");
   let windowPopup = document.getElementById("popup");
   windowPopup.classList.add("open-popup");
   clearChild(windowPopup);
+  console.log(gameObj);
   if (option === "ranking") {
     rankingPopup(windowPopup, gameObj);
-  } else if (option === "victory") victoryPopup(windowPopup, gameObj);
+    
+  } else if (option === "victory")
+  {
+    victoryPopup(windowPopup, gameObj);
+    
+  }
   else if (option === "share")
   {
-    appendItemChild(windowPopup, "Share, with whom?", "h1");
-    sharePopup(windowPopup);
+    // if (gameObj.)
+    // I didn't know that javascript doesn't allow you to pass by ref....
+    // fuck me lmfao
+    gameObj = gameObjGlobal;
+    appendItemChild(windowPopup, "Where to brag to?", "h1");
+  
+    sharePopup(windowPopup, gameObj);
   }
   else if (option === "credits") {
     textHeading.textContent = "Credits, credits, CREDITS!";
     windowPopup.appendChild(textHeading);
     creditPopup(windowPopup);
 
+  }
+  else if (option === "shoutout!")
+  {
+    appendItemChild(windowPopup, "Spread the Love  ", "h1");
+    
+    shoutoutPopup(windowPopup);
   }
   if (option != "victory") {
     let dismissButton = appendItemChild(windowPopup, "dismiss", "button");
@@ -258,9 +270,41 @@ function closePopup() {
   windowPopup.classList.remove("open-popup");
 }
 
+function shoutoutPopup(windowPopup){
+
+    // all this to add the fuckin earth icon. 
+    var heartIcon = document.createElement('img');
+    heartIcon.classList.add('mainImages');
+    heartIcon.setAttribute('src','images/g17870.png');
+    heartIcon.setAttribute('alt','img');
+    heartIcon.setAttribute('style','height:1em; padding: 0em');
+    windowPopup.children[0].insertAdjacentElement('beforeend',heartIcon);
+
+
+  appendItemChild(windowPopup,'Spread your love for this game to your buddies, everywhere! You will also be able to share your scores once you have completed a game by choosing one of the three difficulty options!', 'div', 'subtext');
+  
+  let text = [['twitter','fa fa-twitter', `https://twitter.com/intent/tweet?text=Check%20out%20this%20sweet%20game!%20https://tmdwnsyang.github.io/poppers/`],
+  ['linkedin','fa fa-linkedin', 'https://www.linkedin.com/sharing/share-offsite/?url=https://tmdwnsyang.github.io/poppers/'],
+          ['facebook','fa fa-facebook', 'https://facebook.com'],
+          ['instagram','fa fa-instagram', 'https://instagram.com']
+];
+
+  appendItemChild(windowPopup,'' , 'div','social-container' );
+  for (let i = 0; i < text.length ; i++)
+  {
+    appendItemChild(windowPopup.children[2],'', 'a', text[i][0]); // class name
+    windowPopup.children[2].children[i].setAttribute('href', text[i][2]); // url
+    appendItemChild(windowPopup.children[2].children[i],'', 'i',text[i][1]);
+    windowPopup.children[2].children[i].insertAdjacentText('beforeend',text[i][0]); //text after the button
+
+  }
+}
+
 // Called by results() page. Responsible for saving the user game information
 // and saving to the cloud.
 function victoryPopup(windowPopup, gameObj) {
+  var hiddenTile = document.querySelector("#tile2");
+
  appendItemChild(windowPopup, "Let's make you famous!", "h1");
   appendItemChild(windowPopup, "Enter your name below.", "subText");
 
@@ -273,14 +317,42 @@ function victoryPopup(windowPopup, gameObj) {
   submitButton.addEventListener("click", () => {
     gameObj.setPlayerProperties(playerName.value, gameObj.getBoardScore());
     closePopup();
+     // probably not the most elegant way, but this adds 3 buttons in the result.
+  var str1 = ["Return", "Share", "Ranking"];
+  for (let i = 0; i < 3; i++)
+    appendItemChild(hiddenTile, str1[i], "button", "levelTile");
 
+  hiddenTile.children[1].addEventListener("click", () => {
+    window.location.reload();
+  });
+  hiddenTile.children[2].addEventListener("click", () => openPopup("share", gameObj));
+  hiddenTile.children[3].addEventListener("click", () => openPopup("ranking",gameObj));
     writeUserData(gameObj);
   });
+  return gameObj;
 }
 
-function sharePopup(windowPopup)
+function sharePopup(windowPopup, gameObj)
 {
-  // appendItemChild(windowPopup, '', 'div','sharethis-inline-share-buttons' );
+  
+  let deleteMe = document.getElementById("popup");
+  let text = [['twitter','fa fa-twitter', `https://twitter.com/intent/tweet?text=I got%20a%20score%20of%20${gameObjGlobal.getBoardScore()}%20with%20a%20time%20of%20${gameObjGlobal.getPlayerTime()}%20on%20Poppers!%20Beat%20me%20by%20visiting%20https://tmdwnsyang.github.io/poppers/`],
+          ['facebook','fa fa-facebook'],
+          ['linkedin','fa fa-linkedin'],
+          ['instagram','fa fa-instagram']
+];
+  appendItemChild(windowPopup, `Share your score of ${gameObj.getBoardScore()} and ${gameObj.getPlayerTime()}s with your friends!`, "div",'subtext');
+  appendItemChild(windowPopup,'' , 'div','social-container' );
+  let childIndex = 2;
+  for (let i = 0; i < text.length ; i++)
+  {
+    appendItemChild(windowPopup.children[childIndex],'', 'a', text[i][0]);
+    deleteMe.children[childIndex].children[i].setAttribute('href',`https://twitter.com/intent/tweet?text=I got%20${gameObjGlobal.getBoardScore()}%20with%20a%20time%20of%20${gameObjGlobal.getPlayerTime()}s!%20Beat%20me%20by%20visiting%20https://tmdwnsyang.github.io/poppers/`);
+    appendItemChild(windowPopup.children[childIndex].children[i],'', 'i',text[i][1]);
+    windowPopup.children[childIndex].children[i].insertAdjacentText('beforeend',text[i][0]);
+
+  }
+
 }
 
 // CREDIT POPUP
@@ -305,8 +377,16 @@ function rankingPopup(windowPopup, gameObj) {
   
   var d = new Date();
   var n = d.toLocaleTimeString();
-  appendItemChild(windowPopup, "World Ranking 🌎", "h1");
-  
+  appendItemChild(windowPopup, "World Ranking  ", "h1");
+
+  // all this to add the fuckin earth icon. 
+  var earthIcon = document.createElement('img');
+  earthIcon.classList.add('mainImages');
+  earthIcon.setAttribute('src','images/g9030.png');
+  earthIcon.setAttribute('alt','img');
+  earthIcon.setAttribute('style','height:1em; padding: 0em');
+
+  windowPopup.children[0].insertAdjacentElement('beforeend',earthIcon);
   
   var i = 1;
   for ( let level of gameObj.getLeaderBoard() ) {
@@ -352,7 +432,7 @@ function writeUserData(playerObj) {
     score: playerObj.getPlayerScoreCount(),
     time: playerObj.getPlayerTime() 
   });
-  // console.log(newPostRef);
+  gameObjGlobal = playerObj;
 }
 
 // Returns a container with 3 different difficulty levels and all users
