@@ -49,7 +49,7 @@ function initializeGame() {
   const levels = document.getElementsByClassName("levelTile");
   const container = document.querySelector("#container");
   
-  let leaderBoard = getUserObjectInArray();  // records
+  let leaderBoard = getUpdatedLeaderboard();  // records
   let debug = false;
   let gameObj = new game(easy, debug, leaderBoard);
   // MENU Options!! 0~6
@@ -336,10 +336,10 @@ function sharePopup(windowPopup, gameObj)
 {
   
   let deleteMe = document.getElementById("popup");
-  let text = [['twitter','fa fa-twitter', `https://twitter.com/intent/tweet?text=I got%20a%20score%20of%20${gameObjGlobal.getBoardScore()}%20with%20a%20time%20of%20${gameObjGlobal.getPlayerTime()}%20on%20Poppers!%20Beat%20me%20by%20visiting%20https://tmdwnsyang.github.io/poppers/`],
-          ['facebook','fa fa-facebook'],
-          ['linkedin','fa fa-linkedin'],
-          ['instagram','fa fa-instagram']
+  let text = [['twitter','fa fa-twitter', `https://twitter.com/intent/tweet?text=I got%20${gameObjGlobal.getBoardScore()}%20with%20a%20time%20of%20${gameObjGlobal.getPlayerTime()}s!%20Beat%20me%20by%20visiting%20https://tmdwnsyang.github.io/poppers/`],
+          ['linkedin','fa fa-linkedin', 'https://www.linkedin.com/sharing/share-offsite/?url=https://tmdwnsyang.github.io/poppers/'],
+          ['facebook','fa fa-facebook', 'https://facebook.com'],
+          ['instagram','fa fa-instagram', 'https://instagram.com']
 ];
   appendItemChild(windowPopup, `Share your score of ${gameObj.getBoardScore()} and ${gameObj.getPlayerTime()}s with your friends!`, "div",'subtext');
   appendItemChild(windowPopup,'' , 'div','social-container' );
@@ -347,7 +347,7 @@ function sharePopup(windowPopup, gameObj)
   for (let i = 0; i < text.length ; i++)
   {
     appendItemChild(windowPopup.children[childIndex],'', 'a', text[i][0]);
-    deleteMe.children[childIndex].children[i].setAttribute('href',`https://twitter.com/intent/tweet?text=I got%20${gameObjGlobal.getBoardScore()}%20with%20a%20time%20of%20${gameObjGlobal.getPlayerTime()}s!%20Beat%20me%20by%20visiting%20https://tmdwnsyang.github.io/poppers/`);
+    deleteMe.children[childIndex].children[i].setAttribute('href',text[i][2]);
     appendItemChild(windowPopup.children[childIndex].children[i],'', 'i',text[i][1]);
     windowPopup.children[childIndex].children[i].insertAdjacentText('beforeend',text[i][0]);
 
@@ -378,8 +378,7 @@ function rankingPopup(windowPopup, gameObj) {
   var d = new Date();
   var n = d.toLocaleTimeString();
   appendItemChild(windowPopup, "World Ranking  ", "h1");
-
-  // all this to add the fuckin earth icon. 
+ 
   var earthIcon = document.createElement('img');
   earthIcon.classList.add('mainImages');
   earthIcon.setAttribute('src','images/g9030.png');
@@ -405,16 +404,9 @@ function rankingPopup(windowPopup, gameObj) {
 
   appendItemChild(windowPopup, `Latest data fetched at ${d}`, "subtextSmall",'subtext', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
-  appendItemChild(windowPopup, `*Ordered by descending time. Lower the score, the better!`, "subtextSmall",'div', 'font-size: 0.6em');
+  appendItemChild(windowPopup, `*Top 15 players ordered by descending time. Lower the score, the better! If you're not seeing your score, refresh your page.`, "subtextSmall",'div', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
 
-  // for (let data of leaderBoard){
-  //   console.log( `${data}`);
-  // }
-
-
-
-  }
 
 
 
@@ -433,11 +425,12 @@ function writeUserData(playerObj) {
     time: playerObj.getPlayerTime() 
   });
   gameObjGlobal = playerObj;
+  
 }
 
 // Returns a container with 3 different difficulty levels and all users
 // in a form of array, sorted.
-function getUserObjectInArray(){
+function getUpdatedLeaderboard(){
   let leaderBoard = [[],[],[]];
   var levelKeys = ['easy', 'hard', 'extreme'];
   for (let i = 0; i < levelKeys.length; i++) {
