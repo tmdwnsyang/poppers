@@ -387,24 +387,40 @@ function rankingPopup(windowPopup, gameObj) {
 
   windowPopup.children[0].insertAdjacentElement('beforeend',earthIcon);
   
-  var i = 1;
+  var i = 1, lvl = 1, place = 1;
   for ( let level of gameObj.getLeaderBoard() ) {
     {
       for (let ob of level)
       {
-        appendItemChild(windowPopup, `${i}. ${ob.playerName.padEnd(20,'.').substr(0,16)} score: ${ob.score} | ${ob.difficulty} | ${ob.time}s`,'div' ,'font-size: 2.0em');
+        if (i > 10 && lvl === 1 ) {   // Top 10 of easy levl
+          lvl++; 
+          place= 1;
+          break;
+        }
+        else if (i > 14 && lvl === 2){ // top 4 of hard lvl
+          lvl++;
+          place = 2;
+          break;
+        }
+        else if ( i > 15 )            // top 1 of xtreme lvl
+          break;
+        appendItemChild(windowPopup, `${place}. ${ob.playerName.padEnd(20,'.').substr(0,16)} score: ${ob.score} | ${ob.difficulty} | ${ob.time}s`,'div' ,'font-size: 2.0em');
         i++;
+        place++;
         // appendNewLineChild(windowPopup);
-        if (i > 15) break;
       }
     }
   }
 
   appendNewLineChild(windowPopup);
 
-  appendItemChild(windowPopup, `Latest data fetched at ${d}`, "subtextSmall",'subtext', 'font-size: 0.6em');
+  appendItemChild(windowPopup, `Latest data fetched at ${d}`, "subtextSmall",
+      'subtext', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
-  appendItemChild(windowPopup, `*Top 15 players ordered by descending time. Lower the score, the better! If you're not seeing your score, refresh your page.`, "subtextSmall",'div', 'font-size: 0.6em');
+  appendItemChild(windowPopup, `*Distribution of top 10 easy, top 4 hard, top 1
+   Xtreme players ordered by descending time. 
+   Lower the score, the better! If you're not seeing your score, refresh your
+   page.`, "subtextSmall",'div', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
 
   // for (let data of leaderBoard){
