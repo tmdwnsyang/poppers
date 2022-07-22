@@ -6,9 +6,11 @@
 
 @font-face {
   font-family: Impact;
-  src: local("Impact"),
-       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('woff2'),
-       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('woff');;
+  src: url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('embedded-opentype');/* IE9 + later */
+   src:    url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true?#iefix') format('embedded-opentype'), /* IE6 to IE8  */
+       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('woff'),  /* Newer browsers */
+       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('truetype'), /* Safari og iOS, Chrome, Android, Firefox and Opera except Opera Mini  */
+       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true#Min_font + regular, italic, bold') format('svg');
   font-weight: bold;
 }
 
