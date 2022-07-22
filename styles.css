@@ -1,16 +1,17 @@
-/* *{
+*{
     font-family: Impact;
     box-sizing: border-box;
     font-size: 1.2 em;
-} */
+}
 
 @font-face {
   font-family: Impact;
-  src: url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('embedded-opentype');/* IE9 + later */
-   src:    url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true?#iefix') format('embedded-opentype'), /* IE6 to IE8  */
-       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('woff'),  /* Newer browsers */
-       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true') format('truetype'), /* Safari og iOS, Chrome, Android, Firefox and Opera except Opera Mini  */
-       url('https://github.com/tmdwnsyang/poppers/blob/main/impact.ttf?raw=true#Min_font + regular, italic, bold') format('svg');
+  src:url('fonts/impact.eot');
+  src: url('fonts/impact.eot') format('embedded-opentype'), /* IE6 to IE8  */
+       url('fonts/impact.woff2') format('woff2'),  /* Newer browsers */
+       url('fonts/impact.woff') format('woff'),
+       url('fonts/impact.ttf') format('truetype'),
+       url('fonts/impact.svg#impact') format('svg');
   font-weight: bold;
 }
 
