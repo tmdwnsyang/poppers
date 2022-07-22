@@ -51,7 +51,7 @@ function initializeGame() {
   
   let leaderBoard = getUpdatedLeaderboard();  // records
   let debug = false;
-  let gameObj = new game(easy, debug, leaderBoard);
+  let gameObj = new game('easy', debug, leaderBoard);
   // MENU Options!! 0~6
   menuSelectClickHandler(levels[0], gameObj);
   menuSelectClickHandler(levels[1], gameObj);
