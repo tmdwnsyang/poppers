@@ -456,6 +456,8 @@ function writeUserData(playerObj) {
 function getUpdatedLeaderboard(){
   let leaderBoard = [[],[],[]];
   var levelKeys = ['easy', 'hard', 'extreme'];
+
+
   for (let i = 0; i < levelKeys.length; i++) {
     const easyRef = query(ref(db, levelKeys[i]), orderByChild('time'));
     onValue(easyRef,

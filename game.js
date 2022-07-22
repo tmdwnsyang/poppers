@@ -80,8 +80,8 @@ class game {
     } else {
       this.#encourageIndex = 2;
       this.#boardSize = 16;
-      this.#leftBound = 255;
-      this.#rightBound = 1;
+      this.#leftBound = 6;
+      this.#rightBound = 42;
     }
     if (this.#debugState) this.#boardSize = 1;
 
