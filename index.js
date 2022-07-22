@@ -407,6 +407,13 @@ function rankingPopup(windowPopup, gameObj) {
   appendItemChild(windowPopup, `*Top 15 players ordered by descending time. Lower the score, the better! If you're not seeing your score, refresh your page.`, "subtextSmall",'div', 'font-size: 0.6em');
   appendNewLineChild(windowPopup);
 
+  // for (let data of leaderBoard){
+  //   console.log( `${data}`);
+  // }
+
+
+
+  }
 
 
 
