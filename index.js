@@ -138,7 +138,6 @@ function gameInProgressHandler(elem, gameObj) {
 
       // Increments the board score status
       const theDiv = event.target;
-      gameObj.incrementBoardScore();
       theDiv.textContent = "Pop!";
 
       // Displays the player score and the timer while the game is running
@@ -166,6 +165,10 @@ function gameInProgressHandler(elem, gameObj) {
           win = false;
           break;
         } else win = true;
+      }
+      if (!win){
+        gameObj.incrementBoardScore();
+
       }
 
       // Sets player time property once the player wins and sets time
